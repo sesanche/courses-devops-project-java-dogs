@@ -1,6 +1,5 @@
 package cl.mobdev.sample.api.dogs;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +12,15 @@ import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 
 @Controller
 public class RelayController {
+    private final RestTemplate restTemplate;
 
-    @Autowired
-    RestTemplate restTemplate;
+    public RelayController(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @RequestMapping("/**")
     @ResponseBody
@@ -28,9 +28,14 @@ public class RelayController {
                            HttpMethod method,
                            HttpServletRequest request,
                            HttpServletResponse response) throws URISyntaxException, IOException {
-        URI uri = new URI("https", null, "dog.ceo", 443, "/api" + request.getRequestURI(), request.getQueryString(), null);
+        String url = "https://dog.cep/api" + request.getRequestURI();
 
-        ResponseEntity<String> resp = restTemplate.exchange(uri, method, new HttpEntity<>(body), String.class);
+        String query = request.getQueryString();
+        if (query != null) {
+            url += "?" + query;
+        }
+
+        ResponseEntity<String> resp = restTemplate.exchange(url, method, new HttpEntity<>(body), String.class);
 
         response.setStatus(resp.getStatusCodeValue());
         resp.getHeaders().forEach((k, v) -> v.forEach($ -> response.addHeader(k, $)));
