@@ -1,0 +1,28 @@
+sourceSets {
+    integrationTest {
+        compileClasspath += sourceSets.main.output + configurations.testRuntime
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
+configurations {
+    integrationTestCompile {
+        extendsFrom configurations.testCompile
+    }
+    integrationTestRuntime {
+        extendsFrom configurations.testRuntime
+    }
+}
+
+idea {
+    module {
+        testSourceDirs += file('src/integrationTest/java')
+    }
+}
+
+task integrationTest(type: Test) {
+    testClassesDir = sourceSets.integrationTest.output.classesDir
+    classpath = sourceSets.integrationTest.runtimeClasspath
+
+    build.dependsOn it
+}
