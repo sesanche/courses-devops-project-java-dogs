@@ -1,16 +1,48 @@
 plugins {
     id 'java'
+    id 'idea'
     id 'org.springframework.boot' version '2.0.0.RELEASE'
 }
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web:2.0.0.RELEASE'
+sourceSets {
+    integrationTest {
+        compileClasspath += sourceSets.main.output + configurations.testRuntime
+        runtimeClasspath += output + compileClasspath
+    }
+}
 
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-all:1.10.19'
+configurations {
+    integrationTestCompile {
+        extendsFrom configurations.testCompile
+    }
+    integrationTestRuntime {
+        extendsFrom configurations.testRuntime
+    }
+}
+
+idea {
+    module {
+        testSourceDirs += file('src/integrationTest/java')
+    }
+}
+
+task integrationTest(type: Test) {
+    testClassesDir = sourceSets.integrationTest.output.classesDir
+    classpath = sourceSets.integrationTest.runtimeClasspath
+
+    build.dependsOn it
+}
+
+dependencies {
+    compile 'org.springframework.boot:spring-boot-starter-web:2.0.0.RELEASE'
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-all:1.10.19'
+
+    integrationTestCompile 'org.springframework.boot:spring-boot-starter-test:2.0.0.RELEASE'
 }
 
 repositories {

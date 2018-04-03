@@ -54,7 +54,7 @@ public class RelayControllerTest {
 
         controller.mirrorRest(null, HttpMethod.GET, request, response);
 
-        verify(restTemplate).exchange(eq("https://dog.cep/api/breeds/list/all"), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class));
+        verify(restTemplate).exchange(eq("https://dog.ceo/api/breeds/list/all"), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class));
         verify(response).setStatus(HttpStatus.OK.value());
         verify(output).append("aBody");
     }

@@ -28,7 +28,7 @@ public class RelayController {
                            HttpMethod method,
                            HttpServletRequest request,
                            HttpServletResponse response) throws URISyntaxException, IOException {
-        String url = "https://dog.cep/api" + request.getRequestURI();
+        String url = "https://dog.ceo/api" + request.getRequestURI();
 
         String query = request.getQueryString();
         if (query != null) {
